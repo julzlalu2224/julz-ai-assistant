@@ -1,0 +1,224 @@
+/* ChatBox.css — scoped with .cb- prefix to avoid collisions */
+
+/* ── Positioning ──────────────────────────────────────────── */
+.cb-wrapper {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+  font-family: inherit;
+}
+
+/* ── Floating action button ───────────────────────────────── */
+.cb-fab {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  border: none;
+  background: #6366f1; /* indigo-500 — swap to match your brand */
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.5);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cb-fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.6);
+}
+
+/* ── Chat window ──────────────────────────────────────────── */
+.cb-window {
+  width: 22rem;
+  max-height: 32rem;
+  border-radius: 1rem;
+  background: #1e1e2e; /* dark background */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: cb-pop 0.18s ease;
+}
+
+@keyframes cb-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.cb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #6366f1;
+  color: #fff;
+}
+
+.cb-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.cb-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #a5f3a0;
+  box-shadow: 0 0 0 2px rgba(165, 243, 160, 0.35);
+}
+
+.cb-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.1s;
+}
+.cb-close:hover { color: #fff; }
+
+/* ── Messages area ────────────────────────────────────────── */
+.cb-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+/* ── Bubbles ──────────────────────────────────────────────── */
+.cb-bubble {
+  max-width: 80%;
+  padding: 0.55rem 0.85rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cb-bubble--user {
+  align-self: flex-end;
+  background: #6366f1;
+  color: #fff;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.cb-bubble--assistant {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.07);
+  color: #e2e8f0;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.cb-bubble--error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+}
+
+/* ── Blinking cursor during streaming ─────────────────────── */
+.cb-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  background: #a5b4fc;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: cb-blink 0.8s step-start infinite;
+}
+@keyframes cb-blink {
+  50% { opacity: 0; }
+}
+
+/* ── Input row ───────────────────────────────────────────── */
+.cb-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: #16161f;
+}
+
+.cb-input {
+  flex: 1;
+  resize: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.875rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+  max-height: 7rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.cb-input:focus {
+  border-color: #6366f1;
+}
+.cb-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+.cb-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Send button ─────────────────────────────────────────── */
+.cb-send {
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: none;
+  background: #6366f1;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cb-send:hover:not(:disabled) { background: #4f46e5; }
+.cb-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Responsive: full-screen on very small screens ────────── */
+@media (max-width: 400px) {
+  .cb-wrapper {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    align-items: stretch;
+  }
+  .cb-window {
+    width: 100%;
+    max-height: 85dvh;
+    border-radius: 1rem 1rem 0 0;
+  }
+  .cb-fab {
+    align-self: flex-end;
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+  }
+}
