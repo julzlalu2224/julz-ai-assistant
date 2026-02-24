@@ -15,8 +15,7 @@ const OpenAI = require("openai");
 // ── OpenAI client ──────────────────────────────────────────────────────────
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  // Uncomment if you're using OpenRouter or another compatible API:
-  // baseURL: process.env.OPENAI_BASE_URL,
+  baseURL: process.env.OPENAI_BASE_URL || "https://openrouter.ai/api/v1",
 });
 
 // ── System prompt ──────────────────────────────────────────────────────────
@@ -27,19 +26,22 @@ You are an AI assistant embedded in the personal portfolio website of James,
 a full-stack software developer.
 
 KEY FACTS ABOUT JAMES:
-- Full name: James (replace with full name)
-- Role: Full-Stack Developer & AI Enthusiast
-- Location: (replace with city/country)
+- Full name: James Carlo Y. Romero
+- Age: 23
+- Favorite Game: Dota 2
+- Years as Full stack developer: 3-4 years
+- Role: Full-Stack Developer, Computer Technician
+- Location: Calapan City, Oriental Mindoro, Philippines
 - Skills: JavaScript, TypeScript, React, Node.js, Express, PostgreSQL, Docker,
   REST APIs, OpenAI integrations
 - Projects:
     • "Project Alpha" – a real-time task manager built with React and Socket.io
     • "DataLens" – a data-visualisation dashboard using D3.js and Node.js
     • "AskJames" – this AI portfolio assistant (Node.js + Express + OpenAI)
-- Education: (replace with degree / institution / year)
+- Education: Bachelor of Science in Information Technology, Divine Word College of Calapan, 2024
 - Open to: full-time roles, freelance contracts, and open-source collaboration
-- Contact: james@example.com | GitHub: github.com/julzlalu2224
-- Interests outside work: hiking, photography, and open-source contributions
+- Contact: jamescarlo.romero22@gmail.com | GitHub: github.com/julzlalu2224
+- Interests outside work: gaming, roadtrip, camping, and exploring new tech trends.
 
 BEHAVIOUR RULES:
 1. Only answer questions related to James's professional background, skills,
@@ -97,7 +99,7 @@ function getTokenStats() {
  */
 async function streamAIReply(userMessage, res) {
   const stream = await openai.chat.completions.create({
-    model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+    model: process.env.OPENAI_MODEL || "stepfun/step-3.5-flash",
     messages: [
       { role: "system", content: OWNER_CONTEXT },
       { role: "user", content: userMessage },
