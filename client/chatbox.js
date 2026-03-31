@@ -98,11 +98,27 @@
 
   sendBtn.addEventListener("click", sendMessage);
 
+  // ── Safe markdown → HTML renderer ──────────────────────────────────────
+  function renderMarkdown(text) {
+    // 1. Escape HTML to prevent XSS
+    const escaped = text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    // 2. Convert markdown to HTML
+    return escaped
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")  // **bold**
+      .replace(/\*(?!\*)(.+?)\*(?!\*)/g, "<em>$1</em>")  // *italic*
+      .replace(/^[\-\*] (.+)/gm, "<li>$1</li>")          // - bullet
+      .replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>")         // wrap in <ul>
+      .replace(/\n/g, "<br>");                            // newlines
+  }
+
   // ── Add a message bubble to the chat ─────────────────────────────────────
   function addBubble(role, text = "", isError = false) {
     const bubble = document.createElement("div");
     bubble.className = `cb-bubble cb-bubble--${role}${isError ? " cb-bubble--error" : ""}`;
-    bubble.textContent = text;
+    bubble.innerHTML = renderMarkdown(text);
     messages.appendChild(bubble);
     scrollToBottom();
     return bubble;
@@ -168,7 +184,7 @@
           if (payload.chunk) {
             fullText += payload.chunk;
             // Update bubble text (cursor stays at the end)
-            assistantBubble.textContent = fullText;
+            assistantBubble.innerHTML = renderMarkdown(fullText);
             assistantBubble.appendChild(cursor);
             scrollToBottom();
           }

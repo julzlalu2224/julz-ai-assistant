@@ -14,6 +14,22 @@
 import { useState, useRef, useEffect } from "react";
 import "./ChatBox.css";
 
+// ── Safe markdown → HTML renderer ────────────────────────────────────────────
+function renderMarkdown(text) {
+  // 1. Escape HTML to prevent XSS
+  const escaped = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  // 2. Convert markdown to HTML
+  return escaped
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")  // **bold**
+    .replace(/\*(?!\*)(.+?)\*(?!\*)/g, "<em>$1</em>")  // *italic*
+    .replace(/^[\-\*] (.+)/gm, "<li>$1</li>")          // - bullet
+    .replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>")         // wrap in <ul>
+    .replace(/\n/g, "<br>");                            // newlines
+}
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // ── Chat message shape: { role: "user" | "assistant", text: string } ────────
@@ -101,6 +117,7 @@ export default function ChatBox() {
         }
       }
     } catch (err) {
+      console.error("[ChatBox] fetch error:", err);
       setMessages((prev) => {
         const updated = [...prev];
         updated[updated.length - 1] = {
@@ -146,15 +163,13 @@ export default function ChatBox() {
               <div
                 key={i}
                 className={`cb-bubble cb-bubble--${msg.role}${msg.isError ? " cb-bubble--error" : ""}`}
-              >
-                {msg.text}
-                {/* Blinking cursor while the last assistant message streams */}
-                {isStreaming &&
-                  i === messages.length - 1 &&
-                  msg.role === "assistant" && (
-                    <span className="cb-cursor" />
-                  )}
-              </div>
+                dangerouslySetInnerHTML={{
+                  __html: renderMarkdown(msg.text) +
+                    (isStreaming && i === messages.length - 1 && msg.role === "assistant"
+                      ? '<span class="cb-cursor"></span>'
+                      : "")
+                }}
+              />
             ))}
             <div ref={bottomRef} />
           </div>
